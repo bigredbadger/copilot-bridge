@@ -39,9 +39,10 @@ else
         fi
     fi
 
-    # Start LiteLLM proxy in background
-    $LITELLM --config "$CONFIG" --port "$PORT" &
+    # Start LiteLLM proxy as a detached background process
+    nohup $LITELLM --config "$CONFIG" --port "$PORT" > "${SCRIPT_DIR}/.litellm.log" 2>&1 &
     PROXY_PID=$!
+    disown $PROXY_PID 2>/dev/null || true
     echo "$PROXY_PID" > "$PID_FILE"
 
     # Wait for proxy to be ready
