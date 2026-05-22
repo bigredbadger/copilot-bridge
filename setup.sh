@@ -85,10 +85,42 @@ install_python() {
     info "Installing Python..."
     install_pkg python3
 
+    # After install, Homebrew Python may not be the default python3.
+    # Find the newest python3 and symlink/alias if needed.
+    if ! need_version python3 3 9 "Python"; then
+        # Look for Homebrew Python
+        local brew_python=""
+        for candidate in /opt/homebrew/bin/python3 /usr/local/bin/python3; do
+            if [[ -x "$candidate" ]]; then
+                local v
+                v=$("$candidate" --version 2>&1 | grep -oE '[0-9]+\.[0-9]+' | head -1)
+                local maj="${v%%.*}" min="${v##*.}"
+                if (( maj == 3 && min >= 9 )); then
+                    brew_python="$candidate"
+                    break
+                fi
+            fi
+        done
+
+        if [[ -n "$brew_python" ]]; then
+            info "Using $brew_python ($($brew_python --version 2>&1))"
+            # Export so LiteLLM install uses the right Python
+            PYTHON="$brew_python"
+            PIP="$brew_python -m pip"
+            return
+        fi
+
+        fail "Python 3.9+ is required but not found. Install it manually: brew install python3"
+    fi
+
     if ! has pip3 && ! has pip; then
         install_pkg python3-pip 2>/dev/null || true
     fi
 }
+
+# Set default Python/pip commands (may be overridden by install_python)
+PYTHON="python3"
+PIP="pip3"
 
 # --- jq ---
 
@@ -109,9 +141,9 @@ install_litellm() {
         return
     fi
     info "Upgrading pip..."
-    python3 -m pip install --upgrade pip --quiet 2>/dev/null || true
+    $PYTHON -m pip install --upgrade pip --quiet 2>/dev/null || true
     info "Installing LiteLLM..."
-    pip3 install --quiet litellm || pip install --quiet litellm
+    $PIP install --quiet litellm || $PYTHON -m pip install --quiet litellm
 }
 
 # --- Claude Code ---
