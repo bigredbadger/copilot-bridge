@@ -180,6 +180,17 @@ echo "Copilot Bridge - Setup"
 echo "======================"
 echo ""
 
+# Ensure Xcode CLI tools are installed (needed to compile native Python deps)
+if [[ "$(uname)" == "Darwin" ]]; then
+    if ! xcode-select -p >/dev/null 2>&1; then
+        info "Installing Xcode Command Line Tools..."
+        xcode-select --install 2>/dev/null || true
+        echo "Waiting for Xcode CLI tools installation to complete..."
+        echo "Press Enter after the installer finishes."
+        read -r
+    fi
+fi
+
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 install_node
