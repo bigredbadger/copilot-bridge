@@ -1,0 +1,53 @@
+model_list:
+  # Claude Sonnet 4.6
+  - model_name: claude-sonnet-4-6
+    litellm_params:
+      model: github_copilot/claude-sonnet-4.6
+      extra_headers:
+        editor-version: "vscode/1.103.1"
+        Copilot-Integration-Id: "vscode-chat"
+
+  # Claude Opus 4.6 (1M context)
+  - model_name: claude-opus-4-6
+    litellm_params:
+      model: github_copilot/claude-opus-4.6-1m
+      extra_headers:
+        editor-version: "vscode/1.103.1"
+        Copilot-Integration-Id: "vscode-chat"
+
+  # Claude Haiku 4.5
+  - model_name: claude-haiku-4-5
+    litellm_params:
+      model: github_copilot/claude-haiku-4.5
+      extra_headers:
+        editor-version: "vscode/1.103.1"
+        Copilot-Integration-Id: "vscode-chat"
+
+  # Wildcard catch-all entries so Claude Code's dated model names
+  # (e.g. claude-sonnet-4-6-20260514) route correctly
+  - model_name: claude-sonnet-4-6*
+    litellm_params:
+      model: github_copilot/claude-sonnet-4.6
+      extra_headers:
+        editor-version: "vscode/1.103.1"
+        Copilot-Integration-Id: "vscode-chat"
+  - model_name: claude-opus-4-6*
+    litellm_params:
+      model: github_copilot/claude-opus-4.6-1m
+      extra_headers:
+        editor-version: "vscode/1.103.1"
+        Copilot-Integration-Id: "vscode-chat"
+  - model_name: claude-haiku-4-5*
+    litellm_params:
+      model: github_copilot/claude-haiku-4.5
+      extra_headers:
+        editor-version: "vscode/1.103.1"
+        Copilot-Integration-Id: "vscode-chat"
+
+litellm_settings:
+  drop_params: true
+  modify_params: true
+  telemetry: false
+
+general_settings:
+  enable_anthropic_routes: true
