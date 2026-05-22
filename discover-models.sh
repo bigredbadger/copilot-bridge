@@ -88,8 +88,8 @@ MODELS_JSON=$(curl -sf --max-time 15 \
     exit 1
 }
 
-# Filter to Claude models, excluding internal-only models
-CLAUDE_MODELS=$(echo "$MODELS_JSON" | jq -c '[.data[] | select(.vendor == "Anthropic") | select(.name | test("Internal only") | not) | {
+# Filter to Claude models
+CLAUDE_MODELS=$(echo "$MODELS_JSON" | jq -c '[.data[] | select(.vendor == "Anthropic") | {
     id: .id,
     name: .name,
     max_input: .capabilities.limits.max_context_window_tokens,
