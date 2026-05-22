@@ -129,6 +129,8 @@ echo "Copilot Bridge - Setup"
 echo "======================"
 echo ""
 
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
 install_node
 install_python
 install_jq
@@ -136,9 +138,17 @@ install_litellm
 install_claude
 
 echo ""
-echo "All prerequisites installed."
+info "All prerequisites installed."
 echo ""
-echo "Next steps:"
-echo "  1. Run ./start.sh to launch (LiteLLM will prompt for GitHub auth on first run)"
-echo "  2. Or run ./discover-models.sh first to see available models"
+
+# Authenticate with GitHub Copilot
+info "Authenticating with GitHub Copilot..."
+"${SCRIPT_DIR}/copilot-auth.sh"
+
+# Discover available models
+info "Discovering available models..."
+"${SCRIPT_DIR}/discover-models.sh"
+
+echo ""
+echo "Setup complete. Run ./start.sh to launch Claude Code."
 echo ""
