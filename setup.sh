@@ -156,6 +156,7 @@ install_litellm() {
 
     info "Upgrading pip..."
     "$venv_dir/bin/pip" install --upgrade pip --quiet 2>/dev/null || true
+    "$venv_dir/bin/pip" cache purge 2>/dev/null || true
 
     info "Installing LiteLLM..."
     "$venv_dir/bin/pip" install --quiet litellm
