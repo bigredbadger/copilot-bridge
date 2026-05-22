@@ -4,13 +4,16 @@
 # Supports macOS (Homebrew) and Linux (apt/yum).
 #
 # What it installs:
+#   - Xcode CLI tools (macOS, if missing)
 #   - Node.js 18+ (if missing)
-#   - Python 3.9+ and pip (if missing)
+#   - Python 3.9-3.13 (if missing or incompatible)
 #   - jq (if missing)
-#   - LiteLLM (via pip)
+#   - LiteLLM proxy (in .venv/)
 #   - Claude Code (via npm)
 #
 set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # --- Helpers ---
 
@@ -222,8 +225,6 @@ if [[ "$(uname)" == "Darwin" ]]; then
         read -r
     fi
 fi
-
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 install_node
 install_python
