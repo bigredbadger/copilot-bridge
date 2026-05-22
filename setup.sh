@@ -144,14 +144,21 @@ install_jq() {
 # --- LiteLLM ---
 
 install_litellm() {
-    if has litellm; then
-        info "LiteLLM found."
+    local venv_dir="${SCRIPT_DIR}/.venv"
+
+    if [[ -f "$venv_dir/bin/litellm" ]]; then
+        info "LiteLLM found in venv."
         return
     fi
+
+    info "Creating Python virtual environment..."
+    $PYTHON -m venv "$venv_dir"
+
     info "Upgrading pip..."
-    $PYTHON -m pip install --upgrade pip --quiet 2>/dev/null || true
+    "$venv_dir/bin/pip" install --upgrade pip --quiet 2>/dev/null || true
+
     info "Installing LiteLLM..."
-    $PIP install --quiet litellm || $PYTHON -m pip install --quiet litellm
+    "$venv_dir/bin/pip" install --quiet litellm
 }
 
 # --- Claude Code ---
