@@ -79,4 +79,8 @@ echo "Launching Claude Code..."
 
 ANTHROPIC_BASE_URL="http://localhost:$PORT" \
 ANTHROPIC_AUTH_TOKEN="sk-copilot-bridge" \
+ANTHROPIC_SMALL_FAST_MODEL="sonnet" \
+ENABLE_TOOL_SEARCH="true" \
+CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1 \
+DISABLE_AUTOUPDATER=1 \
 claude "$@"

@@ -132,6 +132,10 @@ litellm_settings:
   drop_params: true
   modify_params: true
   telemetry: false
+  turn_off_message_logging: true
 
 general_settings:
   enable_anthropic_routes: true
+  disable_spend_logs: true
+  disable_error_logs: true
+  max_parallel_requests: 4
