@@ -1,5 +1,6 @@
 .env
 .venv/
+.litellm.pid
 *.log
 __pycache__/
 node_modules/
