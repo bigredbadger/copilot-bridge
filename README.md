@@ -46,11 +46,11 @@ litellm --config litellm_config.yaml --port 4000
 
 # Terminal 2: start Claude Code
 ANTHROPIC_BASE_URL=http://localhost:4000 \
-ANTHROPIC_API_KEY=sk-anything \
+ANTHROPIC_AUTH_TOKEN=sk-anything \
 claude
 ```
 
-The `ANTHROPIC_API_KEY` value is arbitrary — LiteLLM handles real auth via your Copilot token.
+The `ANTHROPIC_AUTH_TOKEN` value is arbitrary — LiteLLM handles real auth via your Copilot token. Using `AUTH_TOKEN` (not `API_KEY`) bypasses Claude Code's login prompt.
 
 ## Authentication
 

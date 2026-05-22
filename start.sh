@@ -39,5 +39,5 @@ echo "Proxy running on http://localhost:$PORT (PID $PROXY_PID)"
 echo "Launching Claude Code..."
 
 ANTHROPIC_BASE_URL="http://localhost:$PORT" \
-ANTHROPIC_API_KEY="sk-copilot-bridge" \
+ANTHROPIC_AUTH_TOKEN="sk-copilot-bridge" \
 claude "$@"
