@@ -159,7 +159,7 @@ install_litellm() {
     "$venv_dir/bin/pip" cache purge 2>/dev/null || true
 
     info "Installing LiteLLM..."
-    "$venv_dir/bin/pip" install --quiet litellm
+    "$venv_dir/bin/pip" install --quiet "litellm[proxy]"
 }
 
 # --- Claude Code ---
