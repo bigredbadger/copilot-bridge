@@ -4,6 +4,17 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PORT="${LITELLM_PORT:-4000}"
 CONFIG="${SCRIPT_DIR}/litellm_config.yaml"
+VENV_DIR="${SCRIPT_DIR}/.venv"
+
+# Use venv litellm if available, otherwise fall back to system
+if [[ -f "$VENV_DIR/bin/litellm" ]]; then
+    LITELLM="$VENV_DIR/bin/litellm"
+elif command -v litellm >/dev/null 2>&1; then
+    LITELLM="litellm"
+else
+    echo "Error: LiteLLM not found. Run ./setup.sh first." >&2
+    exit 1
+fi
 
 # Optional: refresh model list from Copilot API before starting
 if [[ "${AUTO_DISCOVER:-}" == "1" ]]; then
@@ -12,7 +23,7 @@ if [[ "${AUTO_DISCOVER:-}" == "1" ]]; then
 fi
 
 # Start LiteLLM proxy in background
-litellm --config "$CONFIG" --port "$PORT" &
+$LITELLM --config "$CONFIG" --port "$PORT" &
 PROXY_PID=$!
 trap "kill $PROXY_PID 2>/dev/null" EXIT
 
