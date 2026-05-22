@@ -9,6 +9,7 @@ This sets up a local [LiteLLM](https://github.com/BerriAI/litellm) proxy that tr
 - **GitHub Copilot** subscription (Individual, Business, or Enterprise) with Claude model access
 - **macOS or Linux** (Windows via WSL should work too)
 - **Node.js** 18+
+- **jq** (for model discovery)
 
 ## Quick Start
 
@@ -38,6 +39,8 @@ LiteLLM's `github_copilot/` provider needs a valid Copilot token. The easiest wa
 
 That's it. The script starts the LiteLLM proxy and launches Claude Code pointed at it.
 
+On first launch, LiteLLM will prompt you with a device code to authenticate with GitHub if no cached token is found.
+
 #### Manual launch (without the script)
 
 ```bash
@@ -52,26 +55,50 @@ claude
 
 The `ANTHROPIC_API_KEY` value is arbitrary — LiteLLM handles real auth via your Copilot token.
 
+## Auto-discovering models
+
+The included config has a static model list, but Copilot's available models change over time. To update your config with whatever Claude models your Copilot subscription currently offers:
+
+```bash
+./discover-models.sh
+```
+
+This queries `https://api.githubcopilot.com/models`, filters to Anthropic models, and regenerates `litellm_config.yaml` with the correct model IDs, context windows, and output limits. It also creates generic aliases (`opus`, `sonnet`, `haiku`) pointing to the best available model in each tier.
+
+Preview what would be generated without overwriting:
+
+```bash
+./discover-models.sh --dry-run
+```
+
+You can also run discovery automatically on startup:
+
+```bash
+AUTO_DISCOVER=1 ./start.sh
+```
+
 ## Choosing a model
 
-Use Claude Code's `/model` command to switch models. Available models:
+Use Claude Code's `/model` command to switch models. Run `discover-models.sh` to see what's available, or check the generated `litellm_config.yaml`.
+
+Common models:
 
 | Model | Name in `/model` |
 |-------|-------------------|
-| Claude Opus 4.6 (1M context) | `claude-opus-4-6` |
+| Claude Opus 4.6 (1M context) | `claude-opus-4-6-1m` |
 | Claude Sonnet 4.6 | `claude-sonnet-4-6` |
 | Claude Haiku 4.5 | `claude-haiku-4-5` |
 
 Or launch with a specific model:
 
 ```bash
-./start.sh --model claude-opus-4-6
+./start.sh --model claude-opus-4-6-1m
 ```
 
 ## Configuration
 
 - **Port:** Set `LITELLM_PORT` env var (default: `4000`)
-- **Models:** Edit `litellm_config.yaml` to add/remove models or adjust context windows
+- **Models:** Run `./discover-models.sh` to refresh, or edit `litellm_config.yaml` manually
 
 ## How it works
 
@@ -89,6 +116,8 @@ LiteLLM's `github_copilot/` provider handles the protocol translation. The `extr
 **Claude models not available** — Not all Copilot plans include Claude. Check your [Copilot settings](https://github.com/settings/copilot) to verify Claude models are enabled.
 
 **Port already in use** — Another process is using port 4000. Set `LITELLM_PORT=4001` or kill the existing process.
+
+**discover-models.sh fails** — You need a valid Copilot session token. Run `start.sh` first to authenticate (LiteLLM caches the token), then run discovery.
 
 ## License
 

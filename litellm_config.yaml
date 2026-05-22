@@ -1,48 +1,132 @@
-model_list:
-  # Claude Sonnet 4.6
-  - model_name: claude-sonnet-4-6
-    litellm_params:
-      model: github_copilot/claude-sonnet-4.6
+_templates:
+  - litellm_params: &litellm_params
       extra_headers:
         editor-version: "vscode/1.103.1"
         Copilot-Integration-Id: "vscode-chat"
 
-  # Claude Opus 4.6 (1M context)
+model_list:
+  # Claude Opus 4.6
   - model_name: claude-opus-4-6
+    model_info:
+      max_input_tokens: 200000
+      max_output_tokens: 32000
     litellm_params:
-      model: github_copilot/claude-opus-4.6-1m
-      extra_headers:
-        editor-version: "vscode/1.103.1"
-        Copilot-Integration-Id: "vscode-chat"
+      <<: *litellm_params
+      model: github_copilot/claude-opus-4.6
+  - model_name: claude-opus-4-6*
+    model_info:
+      max_input_tokens: 200000
+      max_output_tokens: 32000
+    litellm_params:
+      <<: *litellm_params
+      model: github_copilot/claude-opus-4.6
+
+  # Claude Opus 4.7
+  - model_name: claude-opus-4-7
+    model_info:
+      max_input_tokens: 200000
+      max_output_tokens: 32000
+    litellm_params:
+      <<: *litellm_params
+      model: github_copilot/claude-opus-4.7
+  - model_name: claude-opus-4-7*
+    model_info:
+      max_input_tokens: 200000
+      max_output_tokens: 32000
+    litellm_params:
+      <<: *litellm_params
+      model: github_copilot/claude-opus-4.7
+
+  # Claude Sonnet 4.6
+  - model_name: claude-sonnet-4-6
+    model_info:
+      max_input_tokens: 200000
+      max_output_tokens: 32000
+    litellm_params:
+      <<: *litellm_params
+      model: github_copilot/claude-sonnet-4.6
+  - model_name: claude-sonnet-4-6*
+    model_info:
+      max_input_tokens: 200000
+      max_output_tokens: 32000
+    litellm_params:
+      <<: *litellm_params
+      model: github_copilot/claude-sonnet-4.6
+
+  # Claude Sonnet 4.5
+  - model_name: claude-sonnet-4-5
+    model_info:
+      max_input_tokens: 200000
+      max_output_tokens: 32000
+    litellm_params:
+      <<: *litellm_params
+      model: github_copilot/claude-sonnet-4.5
+  - model_name: claude-sonnet-4-5*
+    model_info:
+      max_input_tokens: 200000
+      max_output_tokens: 32000
+    litellm_params:
+      <<: *litellm_params
+      model: github_copilot/claude-sonnet-4.5
+
+  # Claude Opus 4.5
+  - model_name: claude-opus-4-5
+    model_info:
+      max_input_tokens: 200000
+      max_output_tokens: 32000
+    litellm_params:
+      <<: *litellm_params
+      model: github_copilot/claude-opus-4.5
+  - model_name: claude-opus-4-5*
+    model_info:
+      max_input_tokens: 200000
+      max_output_tokens: 32000
+    litellm_params:
+      <<: *litellm_params
+      model: github_copilot/claude-opus-4.5
 
   # Claude Haiku 4.5
   - model_name: claude-haiku-4-5
+    model_info:
+      max_input_tokens: 200000
+      max_output_tokens: 64000
     litellm_params:
+      <<: *litellm_params
       model: github_copilot/claude-haiku-4.5
-      extra_headers:
-        editor-version: "vscode/1.103.1"
-        Copilot-Integration-Id: "vscode-chat"
-
-  # Wildcard catch-all entries so Claude Code's dated model names
-  # (e.g. claude-sonnet-4-6-20260514) route correctly
-  - model_name: claude-sonnet-4-6*
-    litellm_params:
-      model: github_copilot/claude-sonnet-4.6
-      extra_headers:
-        editor-version: "vscode/1.103.1"
-        Copilot-Integration-Id: "vscode-chat"
-  - model_name: claude-opus-4-6*
-    litellm_params:
-      model: github_copilot/claude-opus-4.6-1m
-      extra_headers:
-        editor-version: "vscode/1.103.1"
-        Copilot-Integration-Id: "vscode-chat"
   - model_name: claude-haiku-4-5*
+    model_info:
+      max_input_tokens: 200000
+      max_output_tokens: 64000
     litellm_params:
+      <<: *litellm_params
       model: github_copilot/claude-haiku-4.5
-      extra_headers:
-        editor-version: "vscode/1.103.1"
-        Copilot-Integration-Id: "vscode-chat"
+
+  # Generic alias: opus -> claude-opus-4.7
+  - model_name: opus
+    model_info:
+      max_input_tokens: 200000
+      max_output_tokens: 32000
+    litellm_params:
+      <<: *litellm_params
+      model: github_copilot/claude-opus-4.7
+
+  # Generic alias: sonnet -> claude-sonnet-4.6
+  - model_name: sonnet
+    model_info:
+      max_input_tokens: 200000
+      max_output_tokens: 32000
+    litellm_params:
+      <<: *litellm_params
+      model: github_copilot/claude-sonnet-4.6
+
+  # Generic alias: haiku -> claude-haiku-4.5
+  - model_name: haiku
+    model_info:
+      max_input_tokens: 200000
+      max_output_tokens: 64000
+    litellm_params:
+      <<: *litellm_params
+      model: github_copilot/claude-haiku-4.5
 
 litellm_settings:
   drop_params: true

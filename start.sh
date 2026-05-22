@@ -1,8 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PORT="${LITELLM_PORT:-4000}"
-CONFIG="$(cd "$(dirname "$0")" && pwd)/litellm_config.yaml"
+CONFIG="${SCRIPT_DIR}/litellm_config.yaml"
+
+# Optional: refresh model list from Copilot API before starting
+if [[ "${AUTO_DISCOVER:-}" == "1" ]]; then
+  echo "Discovering available models..."
+  "${SCRIPT_DIR}/discover-models.sh" || echo "Warning: model discovery failed, using existing config."
+fi
 
 # Start LiteLLM proxy in background
 litellm --config "$CONFIG" --port "$PORT" &
