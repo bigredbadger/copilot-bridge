@@ -8,18 +8,19 @@ This sets up a local [LiteLLM](https://github.com/BerriAI/litellm) proxy that tr
 
 - **GitHub Copilot** subscription (Individual, Business, or Enterprise) with Claude model access
 - **macOS or Linux** (Windows via WSL should work too)
-- **Node.js** 18+
-- **jq** (for model discovery)
 
 ## Quick Start
 
 ### 1. Install dependencies
 
 ```bash
-# LiteLLM proxy
-pip install litellm
+./setup.sh
+```
 
-# Claude Code
+This installs Node.js, Python, jq, LiteLLM, and Claude Code. Skip if you already have them — or install manually:
+
+```bash
+pip install litellm
 npm install -g @anthropic-ai/claude-code
 ```
 
