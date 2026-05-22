@@ -84,46 +84,77 @@ install_node() {
 
 # --- Python ---
 
-install_python() {
-    if need_version python3 3 9 "Python"; then
-        info "Python $(python3 --version 2>&1) found."
-        return
+# Python version bounds: 3.9+ required by LiteLLM, 3.13 max supported by PyO3
+PYTHON_MIN_MINOR=9
+PYTHON_MAX_MINOR=13
+
+check_python_version() {
+    local cmd="$1"
+    if ! has "$cmd"; then return 1; fi
+    local v
+    v=$("$cmd" --version 2>&1 | grep -oE '[0-9]+\.[0-9]+' | head -1)
+    local maj="${v%%.*}" min="${v##*.}"
+    (( maj == 3 && min >= PYTHON_MIN_MINOR && min <= PYTHON_MAX_MINOR ))
+}
+
+find_compatible_python() {
+    # Check default python3 first
+    if check_python_version python3; then
+        echo "python3"
+        return 0
     fi
-
-    info "Installing Python..."
-    install_pkg python3
-
-    # After install, Homebrew Python may not be the default python3.
-    # Find the newest python3 and symlink/alias if needed.
-    if ! need_version python3 3 9 "Python"; then
-        # Look for Homebrew Python
-        local brew_python=""
-        for candidate in /opt/homebrew/bin/python3 /usr/local/bin/python3; do
-            if [[ -x "$candidate" ]]; then
-                local v
-                v=$("$candidate" --version 2>&1 | grep -oE '[0-9]+\.[0-9]+' | head -1)
-                local maj="${v%%.*}" min="${v##*.}"
-                if (( maj == 3 && min >= 9 )); then
-                    brew_python="$candidate"
-                    break
-                fi
+    # Check Homebrew paths
+    for candidate in /opt/homebrew/bin/python3 /usr/local/bin/python3; do
+        if check_python_version "$candidate"; then
+            echo "$candidate"
+            return 0
+        fi
+    done
+    # Check versioned binaries (python3.13, python3.12, etc.)
+    for minor in $(seq $PYTHON_MAX_MINOR -1 $PYTHON_MIN_MINOR); do
+        for candidate in "python3.${minor}" "/opt/homebrew/bin/python3.${minor}" "/usr/local/bin/python3.${minor}"; do
+            if check_python_version "$candidate"; then
+                echo "$candidate"
+                return 0
             fi
         done
+    done
+    return 1
+}
 
-        if [[ -n "$brew_python" ]]; then
-            info "Using $brew_python ($($brew_python --version 2>&1))"
-            # Export so LiteLLM install uses the right Python
-            PYTHON="$brew_python"
-            PIP="$brew_python -m pip"
-            return
-        fi
+install_python() {
+    local found
+    found=$(find_compatible_python) && {
+        info "Python $($found --version 2>&1) found."
+        PYTHON="$found"
+        PIP="$found -m pip"
+        return
+    }
 
-        fail "Python 3.9+ is required but not found. Install it manually: brew install python3"
+    info "Installing Python 3.${PYTHON_MAX_MINOR}..."
+    if has brew; then
+        brew install "python@3.${PYTHON_MAX_MINOR}"
+        # Homebrew installs versioned binary
+        for candidate in "/opt/homebrew/bin/python3.${PYTHON_MAX_MINOR}" "/usr/local/bin/python3.${PYTHON_MAX_MINOR}" "python3.${PYTHON_MAX_MINOR}"; do
+            if check_python_version "$candidate"; then
+                PYTHON="$candidate"
+                PIP="$candidate -m pip"
+                info "Using $PYTHON ($($PYTHON --version 2>&1))"
+                return
+            fi
+        done
+    else
+        install_pkg python3
     fi
 
-    if ! has pip3 && ! has pip; then
-        install_pkg python3-pip 2>/dev/null || true
-    fi
+    # Final check
+    found=$(find_compatible_python) && {
+        PYTHON="$found"
+        PIP="$found -m pip"
+        return
+    }
+
+    fail "Python 3.${PYTHON_MIN_MINOR}-3.${PYTHON_MAX_MINOR} is required. Your Python may be too new (3.14+) or too old. Install Python 3.${PYTHON_MAX_MINOR}: brew install python@3.${PYTHON_MAX_MINOR}"
 }
 
 # Set default Python/pip commands (may be overridden by install_python)
