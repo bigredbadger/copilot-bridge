@@ -107,6 +107,8 @@ install_litellm() {
         info "LiteLLM found."
         return
     fi
+    info "Upgrading pip..."
+    python3 -m pip install --upgrade pip --quiet 2>/dev/null || true
     info "Installing LiteLLM..."
     pip3 install --quiet litellm || pip install --quiet litellm
 }
