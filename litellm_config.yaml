@@ -5,6 +5,22 @@ _templates:
         Copilot-Integration-Id: "vscode-chat"
 
 model_list:
+  # Claude Opus 4.6 (1M context)(Internal only)
+  - model_name: claude-opus-4-6-1m
+    model_info:
+      max_input_tokens: 1000000
+      max_output_tokens: 64000
+    litellm_params:
+      <<: *litellm_params
+      model: github_copilot/claude-opus-4.6-1m
+  - model_name: claude-opus-4-6-1m*
+    model_info:
+      max_input_tokens: 1000000
+      max_output_tokens: 64000
+    litellm_params:
+      <<: *litellm_params
+      model: github_copilot/claude-opus-4.6-1m
+
   # Claude Opus 4.6
   - model_name: claude-opus-4-6
     model_info:
@@ -20,6 +36,54 @@ model_list:
     litellm_params:
       <<: *litellm_params
       model: github_copilot/claude-opus-4.6
+
+  # Claude Opus 4.7 (1M context)(Internal only)
+  - model_name: claude-opus-4-7-1m-internal
+    model_info:
+      max_input_tokens: 1000000
+      max_output_tokens: 64000
+    litellm_params:
+      <<: *litellm_params
+      model: github_copilot/claude-opus-4.7-1m-internal
+  - model_name: claude-opus-4-7-1m-internal*
+    model_info:
+      max_input_tokens: 1000000
+      max_output_tokens: 64000
+    litellm_params:
+      <<: *litellm_params
+      model: github_copilot/claude-opus-4.7-1m-internal
+
+  # Claude Opus 4.7 (High reasoning)(Internal only)
+  - model_name: claude-opus-4-7-high
+    model_info:
+      max_input_tokens: 200000
+      max_output_tokens: 32000
+    litellm_params:
+      <<: *litellm_params
+      model: github_copilot/claude-opus-4.7-high
+  - model_name: claude-opus-4-7-high*
+    model_info:
+      max_input_tokens: 200000
+      max_output_tokens: 32000
+    litellm_params:
+      <<: *litellm_params
+      model: github_copilot/claude-opus-4.7-high
+
+  # Claude Opus 4.7 (Extra high reasoning)(Internal only)
+  - model_name: claude-opus-4-7-xhigh
+    model_info:
+      max_input_tokens: 200000
+      max_output_tokens: 32000
+    litellm_params:
+      <<: *litellm_params
+      model: github_copilot/claude-opus-4.7-xhigh
+  - model_name: claude-opus-4-7-xhigh*
+    model_info:
+      max_input_tokens: 200000
+      max_output_tokens: 32000
+    litellm_params:
+      <<: *litellm_params
+      model: github_copilot/claude-opus-4.7-xhigh
 
   # Claude Opus 4.7
   - model_name: claude-opus-4-7
@@ -101,14 +165,14 @@ model_list:
       <<: *litellm_params
       model: github_copilot/claude-haiku-4.5
 
-  # Generic alias: opus -> claude-opus-4.7
+  # Generic alias: opus -> claude-opus-4.7-1m-internal
   - model_name: opus
     model_info:
-      max_input_tokens: 200000
-      max_output_tokens: 32000
+      max_input_tokens: 1000000
+      max_output_tokens: 64000
     litellm_params:
       <<: *litellm_params
-      model: github_copilot/claude-opus-4.7
+      model: github_copilot/claude-opus-4.7-1m-internal
 
   # Generic alias: sonnet -> claude-sonnet-4.6
   - model_name: sonnet
