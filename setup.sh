@@ -21,15 +21,16 @@ fail()  { echo "ERROR: $*" >&2; exit 1; }
 has() { command -v "$1" >/dev/null 2>&1; }
 
 need_version() {
-    local cmd="$1" min_major="$2" label="$3"
+    local cmd="$1" min_major="$2" min_minor="${3:-0}" label="$4"
     if ! has "$cmd"; then
         return 1
     fi
     local version
     version=$("$cmd" --version 2>&1 | grep -oE '[0-9]+\.[0-9]+' | head -1)
     local major="${version%%.*}"
-    if (( major < min_major )); then
-        warn "$label version $version found, need $min_major+."
+    local minor="${version##*.}"
+    if (( major < min_major )) || (( major == min_major && minor < min_minor )); then
+        warn "$label version $version found, need $min_major.$min_minor+."
         return 1
     fi
     return 0
@@ -55,7 +56,7 @@ install_pkg() {
 # --- Node.js ---
 
 install_node() {
-    if need_version node 18 "Node.js"; then
+    if need_version node 18 0 "Node.js"; then
         info "Node.js $(node --version) found."
         return
     fi
@@ -76,7 +77,7 @@ install_node() {
 # --- Python ---
 
 install_python() {
-    if need_version python3 3 "Python"; then
+    if need_version python3 3 9 "Python"; then
         info "Python $(python3 --version 2>&1) found."
         return
     fi
