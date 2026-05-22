@@ -64,8 +64,16 @@ install_node() {
     info "Installing Node.js..."
     if has brew; then
         brew install node
+        # Homebrew may fail to link if stale files exist from previous installs
+        if ! has node || ! need_version node 18 0 "Node.js"; then
+            info "Linking Node.js (clearing stale files if needed)..."
+            brew link --overwrite node 2>/dev/null || {
+                warn "brew link failed. Trying cleanup..."
+                brew unlink node 2>/dev/null || true
+                brew link --overwrite node || fail "Could not link Node.js. Try: brew link --overwrite node"
+            }
+        fi
     elif has apt-get; then
-        # NodeSource setup for Node 20 LTS
         if ! has curl; then install_pkg curl; fi
         curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
         sudo apt-get install -y -qq nodejs
